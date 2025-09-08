@@ -11,4 +11,4 @@ func minOperations(s string) int {
         }
     }
     return 0
-}©leetcode
+}
