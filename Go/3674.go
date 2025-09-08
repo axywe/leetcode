@@ -7,7 +7,7 @@ func minOperations(nums []int) int {
             same = false
         }
     }
-    if same == true {
+    if same {
         return 0
     } else {
         return 1
