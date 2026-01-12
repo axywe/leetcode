@@ -8,45 +8,49 @@ package main
  * }
  */
 func mergeKLists(lists []*ListNode) *ListNode {
-	minVal, minIndex := 1<<31-1, -1
-	var head *ListNode
-
-	for i := 0; i < len(lists); i++ {
-		if lists[i] != nil {
-			if lists[i].Val < minVal {
-				head = lists[i]
-				minVal = lists[i].Val
-				minIndex = i
-			}
-		}
-	}
-	if head == nil {
+	if lists == nil || len(lists) == 0 {
 		return nil
 	}
-	lists[minIndex] = lists[minIndex].Next
-
-	dummy := head
-	for {
-		minVal = 1<<31 - 1
-		minIndex = -1
-		var new *ListNode
-		for i := 0; i < len(lists); i++ {
-			if lists[i] != nil {
-				if lists[i].Val < minVal {
-					new = lists[i]
-					minVal = lists[i].Val
-					minIndex = i
-				}
-			}
+	i := 1
+	for i < len(lists) {
+		for j := 0; i+j < len(lists); j += i * 2 {
+			lists[j] = mergeLists(lists[j], lists[i+j])
 		}
-		if new != nil {
-			lists[minIndex] = lists[minIndex].Next
-			dummy.Next = new
-			dummy = dummy.Next
+		i *= 2
+	}
+	return lists[0]
+}
 
+func mergeLists(list1, list2 *ListNode) *ListNode {
+	var head *ListNode
+	if list1 == nil {
+		return list2
+	} else if list2 == nil {
+		return list1
+	}
+	if list1.Val < list2.Val {
+		head = list1
+		list1 = list1.Next
+	} else {
+		head = list2
+		list2 = list2.Next
+	}
+	tail := head
+	for list1 != nil && list2 != nil {
+		if list1.Val < list2.Val {
+			tail.Next = list1
+			tail = tail.Next
+			list1 = list1.Next
 		} else {
-			break
+			tail.Next = list2
+			tail = tail.Next
+			list2 = list2.Next
 		}
+	}
+	if list1 != nil {
+		tail.Next = list1
+	} else if list2 != nil {
+		tail.Next = list2
 	}
 	return head
 }
